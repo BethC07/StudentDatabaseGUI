@@ -1,61 +1,56 @@
-/*
- * FileName: Student.java
- * Author: Beth Carmichael
- * Date: 07/13/2018
- * Purpose: 
- *
- *
- */
-package studentdatabasegui;
+package studentdb;
+
 import java.text.DecimalFormat;
 
 public class Student {
-    public String name, major;
-    public int totalHours, totalPoints;
-    // GPA is calculated by dividing the total amount of grade points earned
-    // by the total amount of credit hours attempted
-    public double GPA;
-    public static DecimalFormat oneDecimalPlace = new DecimalFormat(".#");
-    
-    // Constructor Student method
-    public Student(String userName, String userMajor) {
-        this.name = userName;
-        this.major = userMajor;
-        totalHours = 0;
-        totalPoints = 0;
+
+	private String name;
+	private String major;
+	private int completedCredits;
+	private double qualityPoints;
+	
+	public Student(String name, String major) {
+        this.name = name;
+        this.major = major;
+        this.completedCredits = 0;
+        this.qualityPoints = 0;
     }
-    
-    public void courseCompleted(String grade, String hours) {
-        if(totalHours == 0 && totalPoints == 0) {
-            GPA = 4.0;
-        }
-        else {
-            if(grade == "A") {
-            totalPoints += 4;
-            }
-            else if(grade == "B") {
-                totalPoints += 3;
-            }
-            else if(grade == "C") {
-                totalPoints += 2;
-            }
-            else if(grade == "D") {
-                totalPoints += 1;
-            }
-            else if(grade == "F") {
-                totalPoints += 0;
-            }
-            
-            totalHours += Integer.parseInt(hours);
-            GPA = (double)totalPoints / (double)totalHours;
-        }
-        System.out.println("Points: " + totalPoints + " Hours: " + totalHours);
-        System.out.println("GPA: " + GPA);
-    }
-    
-    @Override
-    public String toString() {
-        return "Student name: " + name + "\n Student Major: " + major
-                + "\n Student's GPA: " + oneDecimalPlace.format(GPA);
-    }
+	
+	public void courseCompleted(String grade, int hours) {
+		
+		int gradeVal = 0;
+		
+		if(grade.equals("A")) {
+			gradeVal = 4;
+		}
+		else if(grade.equals("B")) {
+			gradeVal = 3;
+		}
+		else if(grade.equals("C")) {
+			gradeVal = 2;
+		}
+		else if(grade.equals("D")) {
+			gradeVal = 1;
+		}
+		else if(grade.equals("E")) {
+			gradeVal = 0;
+		}
+		
+		this.qualityPoints += gradeVal * hours;
+		this.completedCredits += hours;
+	}
+	
+	public String toString() {
+		
+		double GPA = 4.0;
+		
+		if(this.completedCredits != 0) {
+			GPA = this.qualityPoints/this.completedCredits;
+		}
+		//format to one place
+		DecimalFormat df = new DecimalFormat("#.0");
+		
+	    return "Name: " + this.name + "\nMajor: " + this.major + "\nGPA: " + df.format(GPA);
+	} 
+	
 }
