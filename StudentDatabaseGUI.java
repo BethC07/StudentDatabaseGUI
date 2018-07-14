@@ -28,7 +28,6 @@ public class StudentDatabaseGUI {
     private String[] grades = {"A", "B", "C", "D", "F"};
     private String[] credits = {"3", "6"};
     private String chosenOption1, chosenOption2, chosenOption3;
-    Student studentMethods = new Student("Beth", "CIS");
     Map<String, String> students = new HashMap<String, String>();
     private final int WINDOW_WIDTH = 350;
     private final int WINDOW_HEIGHT = 250;
@@ -81,9 +80,10 @@ public class StudentDatabaseGUI {
                 String studentID = userID.getText();
                 String studentName = userName.getText();
                 String studentMajor = userMajor.getText();
+                Student studentMethods = new Student(studentName, studentMajor);
                 System.out.println("Students: " + students);
                 if(chosenOption1 == "Insert") {
-                    if(checkStudent(studentID, studentName, studentMajor) == true) {
+                    if(checkStudent(studentID) == true) {
                         JOptionPane.showMessageDialog(null, "The user entered is already "
                                 + "in the system. Please enter a new user.");
                     }
@@ -93,7 +93,7 @@ public class StudentDatabaseGUI {
                     }
                 }
                 else if(chosenOption1 == "Delete") {
-                    if(checkStudent(studentID, studentName, studentMajor) == true) {
+                    if(checkStudent(studentID) == true) {
                         students.remove(studentID);
                         JOptionPane.showMessageDialog(null, "The user entered has been removed from the system.");
                     }
@@ -103,7 +103,7 @@ public class StudentDatabaseGUI {
                     }
                 }
                 else if(chosenOption1 == "Find") {
-                    if(checkStudent(studentID, studentName, studentMajor) == true) {
+                    if(checkStudent(studentID) == true) {
                         JOptionPane.showMessageDialog(null, studentMethods.toString());;
                     }
                     else {
@@ -112,7 +112,7 @@ public class StudentDatabaseGUI {
                     }
                 }
                 else if(chosenOption1 == "Update") {
-                    if(checkStudent(studentID, studentName, studentMajor) == true) {
+                    if(checkStudent(studentID) == true) {
                         chosenOption2 = (String)JOptionPane.showInputDialog(null, "Choose credits:",
                             "", JOptionPane.QUESTION_MESSAGE, null, grades, grades);
                         chosenOption3 = (String)JOptionPane.showInputDialog(null, "Choose credits:",
@@ -155,12 +155,9 @@ public class StudentDatabaseGUI {
         frame.setVisible(true);
     }
     
-    public boolean checkStudent(String id, String name, String major) {
+    public boolean checkStudent(String id) {
         if(students.containsKey(id)) {
-            if(students.containsValue(name) && students.containsValue(major)) {
-                return true;
-            }
-            return false;
+            return true;
         }
         else {
             return false;
