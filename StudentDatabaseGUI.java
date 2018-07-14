@@ -28,7 +28,7 @@ public class StudentDatabaseGUI {
     private String[] grades = {"A", "B", "C", "D", "F"};
     private String[] credits = {"3", "6"};
     private String chosenOption1, chosenOption2, chosenOption3;
-    Map<String, String> students = new HashMap<String, String>();
+    Map<> students = new HashMap<>();
     private final int WINDOW_WIDTH = 350;
     private final int WINDOW_HEIGHT = 250;
     
