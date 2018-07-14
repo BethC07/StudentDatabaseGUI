@@ -1,170 +1,174 @@
-/*
- * FileName: StudentDatabaseGUI.java
- * Author: Beth Carmichael
- * Date: 07/13/2018
- * Purpose: 
- *
- *
- */
-package studentdatabasegui;
+package studentdb;
 
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-public class StudentDatabaseGUI {
-    // Initialize JFrame
-    private JFrame frame;
-    // Initialize JTextField
-    private JTextField userID, userName, userMajor;
-    // Initialize JLabel
-    private JLabel userIDLabel, userNameLabel, userMajorLabel, optionLabel, gradeLabel, creditLabel;
-    // Initialize JButton
-    private JButton process;
-    // Initialize JRadioButtons
-    private JComboBox databaseOptionBox;
-    private String[] databaseOptions = {"Insert", "Delete", "Find", "Update"};
-    private String[] grades = {"A", "B", "C", "D", "F"};
-    private String[] credits = {"3", "6"};
-    private String chosenOption1, chosenOption2, chosenOption3;
-    Map<> students = new HashMap<>();
-    private final int WINDOW_WIDTH = 350;
+public class MainGUI extends JPanel {
+
+    // First, I initiate all the JFrame variables I need to make my GUI work
+    // JFrame is the box that will appear
+    public JFrame frame;
+    // JTextField is an inputable field that can be editied
+    public JTextField idInput, nameInput, majorInput;
+    public JLabel idLabel, nameLabel, majorLabel, selectLabel;
+	public JComboBox<String> selectList, gradeList;
+	public JComboBox<Integer> creditList;
+    public Map<String, Student> studentDB = new HashMap<>();
+	
+    // JButton is exactly that, a button
+    // It can actually do something if it has a ActionListener
+    public JButton processButton;
+    private final int WINDOW_WIDTH = 400;
     private final int WINDOW_HEIGHT = 250;
     
-    // The StudentDatabaseGUI() method will create the GUI showed to the user
-    public StudentDatabaseGUI() {
-        // Calling the createGUI class to create the components of the GUI
-        createGUI();
+    public MainGUI() {
+        // Calling the createPanel class to create the components in the box
+        createPanel();
     }
     
-    private void createGUI() {
+    private void createPanel() {      
         frame = new JFrame("Project 4");
         // Setting the width and hight of the box
         frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         
-        // Setting the JLabel variables
-        userIDLabel = new JLabel("Id:");
-        userNameLabel = new JLabel("Name:");
-        userMajorLabel = new JLabel("Major:");
-        optionLabel = new JLabel("Choose Selection:");
-        gradeLabel = new JLabel("Choose grade:");
-        creditLabel = new JLabel("Choose credits:");
+        idLabel = new JLabel("Id:");
+        nameLabel = new JLabel("Name:");
+        majorLabel = new JLabel("Major:");
+        selectLabel = new JLabel("Choose Selection:");
         
         // Setting the JTextField variables
-        userID = new JTextField(10);
-        userID.setMaximumSize(userID.getPreferredSize());
-        userName = new JTextField(10);
-        userName.setMaximumSize(userName.getPreferredSize());
-        userMajor = new JTextField(10);
-        userMajor.setMaximumSize(userMajor.getPreferredSize());
+        idInput = new JTextField(10);
+        idInput.setMaximumSize(idInput.getPreferredSize());
+        nameInput = new JTextField(30);
+        nameInput.setMaximumSize(nameInput.getPreferredSize());
+        majorInput = new JTextField(30);
+        majorInput.setMaximumSize(majorInput.getPreferredSize());
         
-        // Setting the JCheckBox variable
-        databaseOptionBox = new JComboBox(databaseOptions);
-        // Action listeners to get the String item in the array
-        databaseOptionBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                JComboBox comboBoxOptions1 = (JComboBox)ae.getSource();
-                chosenOption1 = (String)comboBoxOptions1.getSelectedItem();
-            }
-        });
+        String[] selectOptions = {"Insert", "Delete", "Find", "Update"};
+        selectList = new JComboBox<>(selectOptions);
+        selectList.setSelectedIndex(0);
+        
+        String[] gradeOptions = {"A", "B", "C", "D", "F"};
+        //gradeList = new JComboBox<>(gradeOptions);
+        //gradeList.setSelectedIndex(0);
+        
+        Integer[] creditOptions = {3, 6};
+        // = new JComboBox<>(creditOptions);
+        //creditList.setSelectedIndex(0);
         
         // Setting the JButton variable
-        process = new JButton("Process Request");
-        // Compute actionListener to decide which function was chosen
-        // and computing the correct result and efficiency
-        process.addActionListener(new ActionListener() {
+        processButton = new JButton("Process Request");
+
+        // calculateWithdraw actionListener
+        processButton.addActionListener(new ActionListener() {
+        
             @Override
             public void actionPerformed(ActionEvent ae) {
-                String studentID = userID.getText();
-                String studentName = userName.getText();
-                String studentMajor = userMajor.getText();
-                Student studentMethods = new Student(studentName, studentMajor);
-                System.out.println("Students: " + students);
-                if(chosenOption1 == "Insert") {
-                    if(checkStudent(studentID) == true) {
-                        JOptionPane.showMessageDialog(null, "The user entered is already "
-                                + "in the system. Please enter a new user.");
-                    }
-                    else {
-                        students.put(studentID, studentName);
-                        JOptionPane.showMessageDialog(null, "The user entered is now in the system.");
-                    }
+            	
+            	String selectAction = selectList.getSelectedItem().toString();
+            	String idText = idInput.getText();
+            	String nameText = nameInput.getText();
+            	String majorText = majorInput.getText();
+            	
+            	if(selectAction == "Insert") {
+            		if(!idText.equals("") && !nameText.equals("") && !majorText.equals("")) {
+            			if(!studentDB.containsKey(idText)) {
+            				Student newStudent = new Student(nameText, majorText);
+                			studentDB.put(idText, newStudent);
+                			JOptionPane.showMessageDialog(null, "Student inserted into database");
+                		}
+                		else {
+                			JOptionPane.showMessageDialog(null, "Student ID already exists in database");
+                		}
+            			
+            		}
+            		else {
+            			JOptionPane.showMessageDialog(null, "Missing required information for insert");
+            		}
                 }
-                else if(chosenOption1 == "Delete") {
-                    if(checkStudent(studentID) == true) {
-                        students.remove(studentID);
-                        JOptionPane.showMessageDialog(null, "The user entered has been removed from the system.");
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(null, "The user entered is not "
-                                + "in the system to remove. Please enter a new user.");
-                    }
+                else if(selectAction == "Delete") {
+                	if(!idText.equals("")) {
+	                	if(studentDB.containsKey(idText)) {
+	            			studentDB.remove(idText);
+	            			JOptionPane.showMessageDialog(null, "Student deleted from database");
+	            		}
+	            		else {
+	            			JOptionPane.showMessageDialog(null, "Student ID not found in database");
+	            		}
+                	}
+                	else {
+            			JOptionPane.showMessageDialog(null, "Missing required information for delete");
+            		}
                 }
-                else if(chosenOption1 == "Find") {
-                    if(checkStudent(studentID) == true) {
-                        JOptionPane.showMessageDialog(null, studentMethods.toString());;
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(null, "The user entered is not "
-                                + "in the system and could not be found. Please enter a new user.");
-                    }
+                else if(selectAction == "Find") {
+                	
+                	if(!idText.equals("")) {
+                		
+                		if(studentDB.containsKey(idText)) {
+                			Student selectedStudent = studentDB.get(idText);
+                			JOptionPane.showMessageDialog(null, selectedStudent.toString());
+                		}
+                		else {
+                			JOptionPane.showMessageDialog(null, "Student ID not found in database");
+                		}
+                	}
+                	else {
+            			JOptionPane.showMessageDialog(null, "Missing required information for find");
+            		}
                 }
-                else if(chosenOption1 == "Update") {
-                    if(checkStudent(studentID) == true) {
-                        chosenOption2 = (String)JOptionPane.showInputDialog(null, "Choose credits:",
-                            "", JOptionPane.QUESTION_MESSAGE, null, grades, grades);
-                        chosenOption3 = (String)JOptionPane.showInputDialog(null, "Choose credits:",
-                                "", JOptionPane.QUESTION_MESSAGE, null, credits, credits);
-                        studentMethods.courseCompleted(chosenOption2, chosenOption3);
-                    }
-                    else {
-                        JOptionPane.showMessageDialog(null, "The user entered is not "
-                                + "in the system and cannot be updated. Please enter a new user.");
-                    }
+                else if(selectAction == "Update") {
+                	
+                	if(!idText.equals("")) {
+                		
+                		if(studentDB.containsKey(idText)) {
+                			Student selectedStudent = studentDB.get(idText);
+                			
+                			String gradeSelection = (String)JOptionPane.showInputDialog(null,"Choose grade", null, JOptionPane.INFORMATION_MESSAGE, null, gradeOptions, gradeOptions[0]);
+                        	Integer creditSelection = (Integer)JOptionPane.showInputDialog(null,"Choose credits", null, JOptionPane.INFORMATION_MESSAGE, null, creditOptions, creditOptions[0]);
+                        	
+                        	if(gradeSelection != null && creditSelection != null) {
+                            	selectedStudent.courseCompleted(gradeSelection, creditSelection);
+                        	}
+                		}
+                		else {
+                			JOptionPane.showMessageDialog(null, "Student ID not found in database");
+                		}
+                	}
+                	else {
+            			JOptionPane.showMessageDialog(null, "Missing required information for update");
+            		}
                 }
             }
         });
 
+        JPanel mainPanel = new JPanel(new GridLayout(6,5,20,15));
+        mainPanel.add(idLabel);
+        mainPanel.add(idInput);
+        mainPanel.add(nameLabel);
+        mainPanel.add(nameInput);
+        mainPanel.add(majorLabel);
+        mainPanel.add(majorInput);
+        mainPanel.add(selectLabel);
+        mainPanel.add(selectList);
+        mainPanel.add(processButton);
+        mainPanel.add(new JLabel(""));
+        mainPanel.add(new JLabel(""));
+        mainPanel.add(new JLabel(""));
         
-        // GridLayout was used to place the ojects in cells with
-        // 6 rows, 2 columns, and hgaps of 10 and vgaps of 15
-        JPanel panel = new JPanel(new GridLayout(5,2,15,30));
-        panel.add(userIDLabel);
-        panel.add(userID);
-        panel.add(userNameLabel);
-        panel.add(userName);
-        panel.add(userMajorLabel);
-        panel.add(userMajor);
-        panel.add(optionLabel);
-        panel.add(databaseOptionBox);
-        panel.add(process);
-        panel.add(new JLabel(""));;
-        
-        frame.add(panel);
+        frame.add(mainPanel);
         
         // Exiting the program once "X" button on the window is pressed
-        // Once program is exited, the file "efficiency" is created
-        // and the efficieny values of both the recursive and iterative
-        // methods are added to the file, along with the count.
-        // File needs to be a csv (commas seperated values) file
-        // because the values are seperated by commas to ensure a graph can be made
-        // and the file can be opened in Excel
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+        
     }
-    
-    public boolean checkStudent(String id) {
-        if(students.containsKey(id)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    } 
-    
-    public static void main(String[] args) {
-        new StudentDatabaseGUI();
-    }
+
+ public static void main(String[] args) {
+     
+	 new MainGUI();
+
+    }   
 }
