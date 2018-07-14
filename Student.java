@@ -15,6 +15,7 @@ public class Student {
     // GPA is calculated by dividing the total amount of grade points earned
     // by the total amount of credit hours attempted
     public double GPA;
+    public static DecimalFormat oneDecimalPlace = new DecimalFormat(".#");
     
     // Constructor Student method
     public Student(String userName, String userMajor) {
@@ -25,34 +26,35 @@ public class Student {
     }
     
     public void courseCompleted(String grade, String hours) {
-        if(grade == "A") {
+        if(totalHours == 0 && totalPoints == 0) {
+            GPA = 4.0;
+        }
+        else {
+            if(grade == "A") {
             totalPoints += 4;
+            }
+            else if(grade == "B") {
+                totalPoints += 3;
+            }
+            else if(grade == "C") {
+                totalPoints += 2;
+            }
+            else if(grade == "D") {
+                totalPoints += 1;
+            }
+            else if(grade == "F") {
+                totalPoints += 0;
+            }
+            
+            totalHours += Integer.parseInt(hours);
+            GPA = (double)totalPoints / (double)totalHours;
         }
-        else if(grade == "B") {
-            totalPoints += 3;
-        }
-        else if(grade == "C") {
-            totalPoints += 2;
-        }
-        else if(grade == "D") {
-            totalPoints += 1;
-        }
-        else if(grade == "F") {
-            totalPoints += 0;
-        }
-        
-        totalHours += Integer.parseInt(hours);
         System.out.println("Points: " + totalPoints + " Hours: " + totalHours);
+        System.out.println("GPA: " + GPA);
     }
     
     @Override
     public String toString() {
-        DecimalFormat oneDecimalPlace = new DecimalFormat(".#");
-        GPA = (double)totalPoints / (double)totalHours;
-        if(totalHours == 0 && totalPoints == 0) {
-            GPA = 4.0;
-        }
-        System.out.println("GPA: " + GPA);
         return "Student name: " + name + "\n Student Major: " + major
                 + "\n Student's GPA: " + oneDecimalPlace.format(GPA);
     }
